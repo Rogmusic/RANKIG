@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Oficial</title>
+    <!-- Bootstrap 5 -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; padding: 40px 0; }
+        .ranking-card { max-width: 600px; margin: auto; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: white; overflow: hidden; }
+        .header-bg { background: #0d6efd; color: white; padding: 25px; text-align: center; }
+        .table { margin-bottom: 0; }
+        .top-1 { background-color: #fff9c4 !important; font-weight: bold; border-left: 5px solid #ffc107; }
+        .top-2 { background-color: #f8f9fa !important; border-left: 5px solid #adb5bd; }
+        .top-3 { background-color: #fff4e5 !important; border-left: 5px solid #fd7e14; }
+        .badge-pos { width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #e9ecef; font-weight: bold; }
+        .top-1 .badge-pos { background: #ffc107; }
+        .pts { color: #0d6efd; font-weight: bold; text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="ranking-card">
+        <div class="header-bg">
+            <h2 class="mb-0">🏆 Ranking Geral</h2>
+            <small id="status">Sincronizado com Google Sheets</small>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr class="table-light">
+                    <th class="text-center" width="80">#</th>
+                    <th>Competidor</th>
+                    <th class="text-end">Pontos</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-corpo">
+                <tr><td colspan="3" class="text-center py-5">Carregando dados...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Link direto da aba Ranking em formato CSV
+    const URL_RANKING = 'https://google.com';
+
+    async function atualizarRanking() {
+        try {
+            // No GitHub Pages, o fetch costuma funcionar direto sem proxy
+            const resposta = await fetch(URL_RANKING);
+            if (!resposta.ok) throw new Error('Erro ao baixar CSV');
+            
+            const csv = await resposta.text();
+            const linhas = csv.split(/\r?\n/).filter(l => l.trim() !== "").slice(1);
+            
+            const tbody = document.getElementById('tabela-corpo');
+            tbody.innerHTML = '';
+
+            linhas.forEach(linha => {
+                const col = linha.includes(';') ? linha.split(';') : linha.split(',');
+
+                if (col.length >= 3) {
+                    const pos = col[0].trim();
+                    const nome = col[1].trim();
+                    const pts = col[2].trim();
+                    
+                    let classe = '';
+                    if (pos === "1") classe = 'top-1';
+                    else if (pos === "2") classe = 'top-2';
+                    else if (pos === "3") classe = 'top-3';
+
+                    tbody.innerHTML += `
+                        <tr class="${classe}">
+                            <td class="text-center"><span class="badge-pos">${pos}º</span></td>
+                            <td>${nome}</td>
+                            <td class="pts">${pts} pts</td>
+                        </tr>`;
+                }
+            });
+            document.getElementById('status').innerText = 'Última atualização: ' + new Date().toLocaleTimeString();
+        } catch (e) {
+            console.error(e);
+            // Se falhar direto, tenta via AllOrigins como plano B
+            const proxyUrl = 'https://allorigins.win' + encodeURIComponent(URL_RANKING);
+            fetch(proxyUrl).then(res => res.text()).then(csv => {
+                /* Repete a lógica de montagem da tabela aqui se necessário */
+                location.reload(); // Recarrega se der erro crítico
+            });
+        }
+    }
+
+    // Inicia e agenda para cada 1 minuto
+    atualizarRanking();
+    setInterval(atualizarRanking, 60000);
+</script>
+
+</body>
+</html>
