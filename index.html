@@ -3,97 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking Oficial</title>
+    <title>Ranking Leaderboard</title>
     <!-- Bootstrap 5 -->
     <link href="https://jsdelivr.net" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; padding: 40px 0; }
-        .ranking-card { max-width: 600px; margin: auto; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); background: white; overflow: hidden; }
-        .header-bg { background: #0d6efd; color: white; padding: 25px; text-align: center; }
-        .table { margin-bottom: 0; }
-        .top-1 { background-color: #fff9c4 !important; font-weight: bold; border-left: 5px solid #ffc107; }
-        .top-2 { background-color: #f8f9fa !important; border-left: 5px solid #adb5bd; }
-        .top-3 { background-color: #fff4e5 !important; border-left: 5px solid #fd7e14; }
-        .badge-pos { width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #e9ecef; font-weight: bold; }
-        .top-1 .badge-pos { background: #ffc107; }
-        .pts { color: #0d6efd; font-weight: bold; text-align: right; }
+        body { background-color: #f4f7f6; padding: 40px 0; }
+        .ranking-card { max-width: 600px; margin: auto; border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .table thead { background-color: #212529; color: white; }
+        .table thead th { border: none; padding: 15px; }
+        .table td { vertical-align: middle; padding: 12px 15px; }
+        
+        /* Cores de destaque para o Top 3 */
+        .rank-1 { background-color: #fff9c4 !important; font-weight: bold; } /* Ouro */
+        .rank-2 { background-color: #f5f5f5 !important; } /* Prata */
+        .rank-3 { background-color: #efebe9 !important; } /* Bronze */
+        
+        .badge-rank { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; background: #dee2e6; font-weight: bold; font-size: 0.9em; }
+        .rank-1 .badge-rank { background: #ffc107; color: #000; }
+        .rank-2 .badge-rank { background: #adb5bd; color: #fff; }
+        .rank-3 .badge-rank { background: #a1887f; color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ranking-card">
-        <div class="header-bg">
-            <h2 class="mb-0">🏆 Ranking Geral</h2>
-            <small id="status">Sincronizado com Google Sheets</small>
+    <div class="card ranking-card">
+        <div class="card-body p-0 overflow-hidden" style="border-radius: 15px;">
+            <div class="bg-primary text-white text-center py-4">
+                <h2 class="mb-0">🏆 Ranking Oficial</h2>
+                <small>Atualizado em tempo real</small>
+            </div>
+            
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th width="80" class="text-center">#</th>
+                        <th>Nome</th>
+                        <th class="text-end">Pontos</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-corpo">
+                    <tr>
+                        <td colspan="3" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <br><small>Carregando dados...</small>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <table class="table table-hover">
-            <thead>
-                <tr class="table-light">
-                    <th class="text-center" width="80">#</th>
-                    <th>Competidor</th>
-                    <th class="text-end">Pontos</th>
-                </tr>
-            </thead>
-            <tbody id="tabela-corpo">
-                <tr><td colspan="3" class="text-center py-5">Carregando dados...</td></tr>
-            </tbody>
-        </table>
     </div>
 </div>
 
 <script>
-    // Link direto da aba Ranking em formato CSV
-    const URL_RANKING = 'https://google.com';
+    // SEU LINK ATUALIZADO
+    const URL_CSV = 'https://google.com';
+    
+    // Proxy para evitar erro de CORS
+    const PROXY = 'https://allorigins.win';
 
-    async function atualizarRanking() {
+    async function buscarDados() {
         try {
-            // No GitHub Pages, o fetch costuma funcionar direto sem proxy
-            const resposta = await fetch(URL_RANKING);
-            if (!resposta.ok) throw new Error('Erro ao baixar CSV');
+            const response = await fetch(PROXY + encodeURIComponent(URL_CSV));
+            const data = await response.text();
             
-            const csv = await resposta.text();
-            const linhas = csv.split(/\r?\n/).filter(l => l.trim() !== "").slice(1);
-            
-            const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = '';
+            // Divide as linhas e remove a primeira (cabeçalho)
+            const linhas = data.split(/\r?\n/).slice(1);
+            const corpo = document.getElementById('tabela-corpo');
+            corpo.innerHTML = '';
 
-            linhas.forEach(linha => {
-                const col = linha.includes(';') ? linha.split(';') : linha.split(',');
-
-                if (col.length >= 3) {
-                    const pos = col[0].trim();
-                    const nome = col[1].trim();
-                    const pts = col[2].trim();
+            linhas.forEach((linha) => {
+                // Tenta dividir por vírgula ou ponto e vírgula
+                const colunas = linha.includes(';') ? linha.split(';') : linha.split(',');
+                
+                if (colunas.length >= 3) {
+                    const pos = colunas[0].trim();
+                    const nome = colunas[1].trim();
+                    const pontos = colunas[2].trim();
                     
-                    let classe = '';
-                    if (pos === "1") classe = 'top-1';
-                    else if (pos === "2") classe = 'top-2';
-                    else if (pos === "3") classe = 'top-3';
+                    // Define classe de destaque
+                    let classeRank = '';
+                    if (pos == '1') classeRank = 'rank-1';
+                    else if (pos == '2') classeRank = 'rank-2';
+                    else if (pos == '3') classeRank = 'rank-3';
 
-                    tbody.innerHTML += `
-                        <tr class="${classe}">
-                            <td class="text-center"><span class="badge-pos">${pos}º</span></td>
+                    corpo.innerHTML += `
+                        <tr class="${classeRank}">
+                            <td class="text-center"><span class="badge-rank">${pos}</span></td>
                             <td>${nome}</td>
-                            <td class="pts">${pts} pts</td>
-                        </tr>`;
+                            <td class="text-end fw-bold text-primary">${pontos}</td>
+                        </tr>
+                    `;
                 }
             });
-            document.getElementById('status').innerText = 'Última atualização: ' + new Date().toLocaleTimeString();
-        } catch (e) {
-            console.error(e);
-            // Se falhar direto, tenta via AllOrigins como plano B
-            const proxyUrl = 'https://allorigins.win' + encodeURIComponent(URL_RANKING);
-            fetch(proxyUrl).then(res => res.text()).then(csv => {
-                /* Repete a lógica de montagem da tabela aqui se necessário */
-                location.reload(); // Recarrega se der erro crítico
-            });
+
+        } catch (error) {
+            console.error(error);
+            document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="3" class="text-center text-danger">Erro ao carregar os dados. Verifique a publicação da planilha.</td></tr>';
         }
     }
 
-    // Inicia e agenda para cada 1 minuto
-    atualizarRanking();
-    setInterval(atualizarRanking, 60000);
+    // Inicia a busca
+    buscarDados();
 </script>
 
 </body>
