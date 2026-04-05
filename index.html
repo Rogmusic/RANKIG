@@ -4,20 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking Leaderboard</title>
-    <!-- Bootstrap 5 -->
+    <!-- Bootstrap 5 Corrigido -->
     <link href="https://jsdelivr.net" rel="stylesheet">
+    <style>
+        body {
+            /* Imagem do Estádio */
+            background-image: url("view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
+        h1 {
+            position: relative;
+            z-index: 10; /* Garante que o título fique sobre o iframe se necessário */
+            color: #e9e3e3;
+            font-weight: bold;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5); /* Melhora leitura no fundo escuro */
+        }
+
+        .ranking-container {
+            width: 90%;
+            max-width: 500px;
+            margin-top: 20px;
+            /* Se o iframe for transparente, este container não pode ter fundo sólido */
+            background-color: transparent; 
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            background: transparent; /* Remove fundo branco do iframe no navegador */
+        }
+    </style>
 </head>
 <body>
-<div class="ranking-container">
-  <!-- Substitua o link abaixo pela sua URL do Web App gerada no Google -->
-  <iframe src="https://script.google.com/macros/s/AKfycbxK4KqNli-O0_4Cx-lefn9yhtEOtFbL52zAELrdhjfL-o4Ua46vfyXLZsdEPM5D5nDw-g/exec" 
-          width="100%" 
-          height="600px" 
-          frameborder="0">
-  </iframe>
-</div>
 
-           
+    <h1>SAMUELSPORTS</h1>
+
+    <div class="ranking-container">
+        <!-- Cole aqui o link do seu Web App Gerado no Google -->
+        <iframe src="https://script.google.com/macros/s/AKfycbx6lCIZ3qxpfmDqCLqGG82WYs--OmeDHISoLAY4VqLY/dev" 
+                allowtransparency="true">
+        </iframe>
+    </div>
+
 </body>
 </html>
