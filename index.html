@@ -42,16 +42,20 @@
         }
 
         /* 3. Estilo dos Containers dos Iframes */
+                /* 3. Estilo dos Containers dos Iframes */
         .iframe-card {
-            flex: 1;            /* Divide o espaço igualitariamente */
-            min-width: 380px;   /* Não deixa ficar muito "tripa" */
-            background: rgba(0, 0, 0, 0.3); /* Vidro fumê suave */
+            flex: 1;
+            min-width: 380px;
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            height: 900px;      /* Altura fixa para evitar scroll duplo chato */
+            
+            /* AJUSTE AQUI: */
+            height: 80vh; /* Ocupa 80% da altura da tela do PC */
+            max-height: 850px; /* Limite máximo para não esticar demais em monitores gigantes */
         }
 
         iframe {
