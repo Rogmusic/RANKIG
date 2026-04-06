@@ -3,109 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking Leaderboard</title>
-   <style>
-    body {
-        /* Cor de fundo sólida para carregar INSTANTANEAMENTE antes da imagem */
-        background-color: #0b0e14; 
-        
-        /* Configuração padrão da imagem */
-        background-image: url("view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg");
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        background-position: center;
-        
-        min-height: 100vh;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        font-family: sans-serif;
-    }
-
-    /* AJUSTE ESPECÍFICO PARA MOBILE (Celulares) */
-    @media (max-width: 768px) {
+    <title>SamuelSports - Dashboard</title>
+    <style>
         body {
-            /* No celular, centralizamos a ação do estádio */
-            background-position: 65% center; 
-            /* Evita que o fundo "pule" quando a barra do navegador sobe/desce */
-            background-attachment: scroll; 
+            background-image: url("view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: sans-serif;
         }
-        
+
         h1 {
-            font-size: 1.8rem;
-            margin-top: 15px;
+            color: #e9e3e3;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
         }
 
-        .ranking-container {
-            width: 98%; /* Ganha mais espaço nas laterais no celular */
-            margin-top: 10px;
+        /* CONTAINER DOS IFRAMES */
+        .main-container {
+            width: 95%;
+            max-width: 1200px; /* Largura maior para caber dois lado a lado */
+            display: flex;
+            flex-wrap: wrap; /* Permite quebrar linha no mobile */
+            justify-content: center;
+            gap: 20px; /* Espaço entre os dois */
+            margin-bottom: 30px;
         }
-        
+
+        .iframe-wrapper {
+            flex: 1; /* Faz os dois dividirem o espaço igual no PC */
+            min-width: 350px; /* Impede que fiquem finos demais */
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            min-height: 800px;
+        }
+
         iframe {
-            height: 90vh; /* O iframe ocupa quase a tela toda no celular */
+            width: 100%;
+            height: 850px;
+            border: none;
+            background: transparent;
         }
-    }
 
-    h1 {
-        color: #e9e3e3;
-        font-weight: bold;
-        margin-top: 20px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        text-align: center;
-    }
-
-    .ranking-container {
-        width: 95%;
-        max-width: 600px;
-        margin-top: 20px;
-        /* Background semi-transparente para o ranking não sumir no fundo */
-        background: rgba(0, 0, 0, 0.4); 
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-    iframe {
-        width: 100%;
-        height: 800px;
-        border: none;
-        background: transparent;
-        display: block;
-    }
-</style>
- <script>
-     if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-    .then(() => console.log("Cache ativado!"))
-    .catch(err => console.log("Erro no cache:", err));
-}
-</script>
-    
+        /* AJUSTE PARA MOBILE */
+        @media (max-width: 800px) {
+            .iframe-wrapper {
+                flex: 1 1 100%; /* No celular, cada um ocupa 100% da largura */
+                min-height: 600px;
+            }
+            iframe { height: 700px; }
+        }
+    </style>
 </head>
 <body>
 
     <h1>SAMUELSPORTS</h1>
 
-    <div class="ranking-container" id="iframe-slot">
-        <!-- O iframe será injetado pelo script abaixo -->
+    <div class="main-container">
+        <!-- Iframe 1: Ranking -->
+        <div class="iframe-wrapper" id="container-ranking"></div>
+
+        <!-- Iframe 2: Venda de Ingressos -->
+        <div class="iframe-wrapper" id="container-vendas"></div>
     </div>
 
     <script>
-        // 1. CARREGAMENTO DO IFRAME (Sempre atualizado)
-        // Isso garante que o HTML e a Imagem carreguem ANTES do iframe começar a puxar dados
-        window.onload = () => {
-            const container = document.getElementById('iframe-slot');
-            const iframe = document.createElement('iframe');
-            iframe.src = "https://script.google.com/macros/s/AKfycbzET26SuTUFltwRutjLbRT49ZhE4qFsyXwa_iLiWrPRsXaPk8Z1h1ioKSRRhI84MoB4ng/exec";
-            iframe.setAttribute('allowtransparency', 'true');
-            container.appendChild(iframe);
-        };
+        window.addEventListener('DOMContentLoaded', () => {
+            // Links dos seus Apps Scripts
+            
+            const urlVendas = "https://script.google.com/macros/s/AKfycbzXcGrpPysBHAoylaDIm0uBQdoW_5ZRa_4hxZFYp54wQpyJjmG34l9qEwgqqxiMkOEhgg/exec";
+            const urlRanking = "https://script.google.com/macros/s/AKfycbw2ak-evcfOBudSwcpBdEwiC4nZZmiXzS2BynG0JPG5HsrW8_rqziG1wnAjA0QdADfXRA/exec";
+            // Injetar Iframe 1
+            const frame1 = document.createElement('iframe');
+            frame1.src = urlRanking;
+            frame1.setAttribute('allowtransparency', 'true');
+            document.getElementById('container-ranking').appendChild(frame1);
 
-        // 2. REGISTRO DE CACHE (Para a página abrir instantaneamente na próxima vez)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+            // Injetar Iframe 2
+            const frame2 = document.createElement('iframe');
+            frame2.src = urlVendas;
+            frame2.setAttribute('allowtransparency', 'true');
+            document.getElementById('container-vendas').appendChild(frame2);
+        });
     </script>
+
 </body>
 </html>
+
