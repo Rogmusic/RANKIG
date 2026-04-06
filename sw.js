@@ -1,25 +1,30 @@
-
-const CACHE_NAME = 'samuelsports-v1';
-const assets = [
-  '/',
-  '/index.html', // mude para o nome do seu arquivo principal
-  '/view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg'
+const CACHE_NAME = 'samuelsports-cache-v1';
+const assetsToCache = [
+  './',
+  './index.html', // Verifique se o nome do seu arquivo é esse mesmo
+  './view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg' // O fundo pesado
 ];
 
-// Instala o cache
+// Instalação: Salva os arquivos no celular/PC do usuário
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(assets);
+      console.log('Arquivos cacheados com sucesso!');
+      return cache.addAll(assetsToCache);
     })
   );
 });
 
-// Responde com cache primeiro, mas busca o HTML novo em segundo plano
+// Estratégia: Tenta carregar do Cache primeiro. Se não tiver, busca na rede.
 self.addEventListener('fetch', (event) => {
+  // Ignora o iframe do Google (ele precisa ser sempre atualizado)
+  if (event.request.url.includes('google.com')) {
+    return; 
+  }
+
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      return cachedResponse || fetch(event.request);
     })
   );
 });
