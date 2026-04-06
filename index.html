@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SamuelSports - Dashboard</title>
     <style>
+        /* 1. Fundo e Reset */
         body {
             background-image: url("view-empty-soccer-stadium-with-fantasy-dreamy-sky.jpg");
             background-repeat: no-repeat;
@@ -16,85 +17,86 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
         }
 
         h1 {
-            color: #e9e3e3;
-            font-weight: bold;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-weight: 900;
+            margin: 30px 0;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            letter-spacing: 2px;
         }
 
-        /* CONTAINER DOS IFRAMES */
+        /* 2. Layout Flexível (O Segredo para PC/Mobile) */
         .main-container {
-            width: 95%;
-            max-width: 1200px; /* Largura maior para caber dois lado a lado */
             display: flex;
-            flex-wrap: wrap; /* Permite quebrar linha no mobile */
+            flex-direction: row; /* Lado a lado no PC */
+            flex-wrap: wrap;    /* Permite quebrar linha se não couber */
             justify-content: center;
-            gap: 20px; /* Espaço entre os dois */
-            margin-bottom: 30px;
+            align-items: flex-start;
+            gap: 25px;
+            width: 95%;
+            max-width: 1300px;
+            margin-bottom: 50px;
         }
 
-        .iframe-wrapper {
-            flex: 1; /* Faz os dois dividirem o espaço igual no PC */
-            min-width: 350px; /* Impede que fiquem finos demais */
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
+        /* 3. Estilo dos Containers dos Iframes */
+        .iframe-card {
+            flex: 1;            /* Divide o espaço igualitariamente */
+            min-width: 380px;   /* Não deixa ficar muito "tripa" */
+            background: rgba(0, 0, 0, 0.3); /* Vidro fumê suave */
+            backdrop-filter: blur(5px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: hidden;
-            min-height: 800px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            height: 900px;      /* Altura fixa para evitar scroll duplo chato */
         }
 
         iframe {
             width: 100%;
-            height: 850px;
+            height: 100%;
             border: none;
             background: transparent;
         }
 
-        /* AJUSTE PARA MOBILE */
-        @media (max-width: 800px) {
-            .iframe-wrapper {
-                flex: 1 1 100%; /* No celular, cada um ocupa 100% da largura */
-                min-height: 600px;
+        /* 4. Ajustes para Celular */
+        @media (max-width: 850px) {
+            .main-container {
+                flex-direction: column; /* Um embaixo do outro no Mobile */
+                align-items: center;
             }
-            iframe { height: 700px; }
+            .iframe-card {
+                width: 100%;
+                min-width: unset;
+                height: 750px; /* Reduz um pouco a altura no celular */
+            }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <h1>SAMUELSPORTS</h1>
+    <h1>SAMUELSPORTS DASHBOARD</h1>
 
     <div class="main-container">
-        <!-- Iframe 1: Ranking -->
-        <div class="iframe-wrapper" id="container-ranking"></div>
+        <!-- Coluna 1: Ranking -->
+        <div class="iframe-card">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbwH9ARs0FhN3ErVp4ARj3BSuqCau7REpWG11aXv_-SyZP-t5mKZCSsCUv1IaMhf4px_Jw/exec" 
+                allowtransparency="true">
+            </iframe>
+        </div>
 
-        <!-- Iframe 2: Venda de Ingressos -->
-        <div class="iframe-wrapper" id="container-vendas"></div>
+        <!-- Coluna 2: Venda de Ingressos -->
+        <div class="iframe-card">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbzPETHNtT0LHviERuJ7haEelErtcIQiret79w-qc7SjoFP0LaJxOXzg6-OLMHApgha-yg/exec" 
+                allowtransparency="true">
+            </iframe>
+        </div>
     </div>
-
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            // Links dos seus Apps Scripts
-            
-            const urlVendas = "https://script.google.com/macros/s/AKfycbwH9ARs0FhN3ErVp4ARj3BSuqCau7REpWG11aXv_-SyZP-t5mKZCSsCUv1IaMhf4px_Jw/exec";
-            const urlRanking = "https://script.google.com/macros/s/AKfycbw2ak-evcfOBudSwcpBdEwiC4nZZmiXzS2BynG0JPG5HsrW8_rqziG1wnAjA0QdADfXRA/exec";
-            // Injetar Iframe 1
-            const frame1 = document.createElement('iframe');
-            frame1.src = urlRanking;
-            frame1.setAttribute('allowtransparency', 'true');
-            document.getElementById('container-ranking').appendChild(frame1);
-
-            // Injetar Iframe 2
-            const frame2 = document.createElement('iframe');
-            frame2.src = urlVendas;
-            frame2.setAttribute('allowtransparency', 'true');
-            document.getElementById('container-vendas').appendChild(frame2);
-        });
-    </script>
 
 </body>
 </html>
-
