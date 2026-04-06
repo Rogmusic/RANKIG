@@ -81,17 +81,18 @@
             
             const urlVendas = "https://script.google.com/macros/s/AKfycbzXcGrpPysBHAoylaDIm0uBQdoW_5ZRa_4hxZFYp54wQpyJjmG34l9qEwgqqxiMkOEhgg/exec";
             const urlRanking = "https://script.google.com/macros/s/AKfycbw2ak-evcfOBudSwcpBdEwiC4nZZmiXzS2BynG0JPG5HsrW8_rqziG1wnAjA0QdADfXRA/exec";
-            // Injetar Iframe 1
-            const frame1 = document.createElement('iframe');
-            frame1.src = urlRanking;
-            frame1.setAttribute('allowtransparency', 'true');
-            document.getElementById('container-ranking').appendChild(frame1);
+           
 
             // Injetar Iframe 2
             const frame2 = document.createElement('iframe');
             frame2.src = urlVendas;
             frame2.setAttribute('allowtransparency', 'true');
             document.getElementById('container-vendas').appendChild(frame2);
+             // Injetar Iframe 1
+            const frame1 = document.createElement('iframe');
+            frame1.src = urlRanking;
+            frame1.setAttribute('allowtransparency', 'true');
+            document.getElementById('container-ranking').appendChild(frame1);
         });
     </script>
 
