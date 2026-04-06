@@ -74,7 +74,13 @@
         display: block;
     }
 </style>
- 
+ <script>
+     if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+    .then(() => console.log("Cache ativado!"))
+    .catch(err => console.log("Erro no cache:", err));
+}
+</script>
     
 </head>
 <body>
